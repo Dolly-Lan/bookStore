@@ -1,0 +1,26 @@
+<div class="well clearfix">
+    <form class="form-inline pull-right">
+        <div class="form-group">
+            <label class="sr-only">搜索书籍</label>
+            <input type="search" class="form-control"  placeholder="书名" ng-model="filterText">
+        </div>
+        <!--<button type="submit" class="btn btn-default">搜索</button>-->
+    </form>
+</div>
+<div>
+    <table class="table table-bordered table-hover">
+        <thead>
+        <tr><th>书号</th> <th>书名</th><th>操作</th> </tr>
+        </thead>
+        <tbody>
+        <tr ng-repeat="book in books">
+            <th scope="row">{{book.id}}</th> <td>{{book.name}}</td><td><a href="#!/bookDetail/{{book.id}}">查看</a></td> </tr>
+        </tr>
+        </tbody>
+    </table>
+</div>
+<div>
+    <nav aria-label="Page navigation" class="pull-center">
+        <pagination pageSize="{{pagingOptions.pageSize}}" numPages="{{pagingOptions.pageLength}}" currPage="{{pagingOptions.currentPage}}" onSelectPage="getDataAsync(pageSize, page)"></pagination>
+    </nav>
+</div>

@@ -1,0 +1,11 @@
+<ul class="pagination">
+    <li ng-class="{disabled: noPreviousPage()}">
+        <a ng-click="selectPreviousPage()">上一页</a>
+    </li>
+    <li ng-repeat="page in pages" ng-class="{active: isActivePage(page)}">
+        <a ng-click="selectPage(page)">{{page}}</a>
+    </li>
+    <li ng-class="{disabled: noNextPage()}">
+        <a ng-click="selectNextPage()">下一页</a>
+    </li>
+</ul>
