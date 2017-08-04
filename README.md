@@ -42,7 +42,7 @@ app/
     
     pagination.html （定义分页模板）
 
-二、技术细节
+二、技术细节   
 
 1)bookList  controller定义异步请求后台数据方法 :
 
