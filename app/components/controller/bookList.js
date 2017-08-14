@@ -5,53 +5,55 @@ angular
 
     .controller('bookList', ['$scope','$http','$timeout',function($scope,$http,$timeout) {
         $scope.books= [];
-        $scope.filterText = "";
-        $scope.pagingOptions = {
+        $scope.search = "";
+        $scope.pageOpts = {
             pageSize: 2,
-            currentPage: 1,
-            pageLength: 1
+            curPage: 1,
+            page: 1
         };
-        $scope.getDataAsync = function(pageSize, page, searchText) {
-            if (searchText) {
-                var ft = searchText.toLowerCase();
-                $http.get('http://localhost:3001/books/'+page+'/'+pageSize+'/'+searchText)
-                    .success(function(largeLoad) {
-                        $scope.books = largeLoad.books;
-                        $scope.pagingOptions.pageLength = (largeLoad.pages).toString();
-                        /*data = largeLoad.books.filter(function(item) {
-                            return JSON.stringify(item).toLowerCase().indexOf(ft) != -1;
-                        });
-                        $scope.setPagingData(data, page, pageSize);*/
-                    });
-            } else {
-                $http.get('http://localhost:3001/books/'+page+'/'+pageSize)
-                    .success(function(largeLoad) {
-                        $scope.books = largeLoad.books;
-                        $scope.pagingOptions.pageLength = (largeLoad.pages).toString();
-                    });
-            }
+        $scope.getDataAsync = function(pageSize, page) {
+            $http
+                .get('http://localhost:3001/books/'+page+'/'+pageSize)
+                .success(function(largeLoad) {
+                    $scope.books = largeLoad.books;
+                    $scope.pageOpts.page = largeLoad.pages;
+                });
         };
 
-        $scope.setPagingData = function(data, page, pageSize) {
-            //var pagedData = data.slice((page - 1) * pageSize, page * pageSize);
-            $scope.books = data;
-            $scope.pagingOptions.pageLength = Math.ceil(data.length/pageSize).toString();
-            if (!$scope.$$phase) { //返回$digest
-                $scope.$apply();
-            }
-        };
+        //删除图书
+        $scope.delete = function (id,curPage,pageSize,search) {
+            $http
+                .get("http://localhost:3001/books/del/"+id+'/'+curPage+'/'+pageSize+'/'+search)
+                .success(function (res) {
+                    $scope.pageOpts.page = res.pages
+                    if(curPage > res.pages)
+                        $scope.pageOpts.curPage = res.pages;
+                });
+        }
 
-        $scope.getDataAsync($scope.pagingOptions.pageSize, $scope.pagingOptions.currentPage);
+        $scope.getDataAsync($scope.pageOpts.pageSize, $scope.pageOpts.curPage,"");
 
-        $scope.$watch('filterText', function(newVal, oldVal) {
-            var timeout ;
+
+        /*$scope.$watch('search', function(newVal, oldVal) {
+            var timer;
             if (newVal !== oldVal) {
-                $timeout.cancel(timeout);
-                timeout = $timeout(function () {
-                    $scope.getDataAsync($scope.pagingOptions.pageSize, $scope.pagingOptions.currentPage, $scope.filterText);
-                },500);
+                if (timer)
+                    $timeout.cancel(timer);
+                timer = $timeout(function () {
+                    $scope.getDataAsync($scope.pageOpts.pageSize, $scope.pageOpts.curPage, $scope.search);
+                },1000);
             }
-        }, true);
+        }, true);*/
+
+        $scope.searchBook = function (curPage, pageSize, search) {
+            var search = search.toLowerCase();
+            $http
+                .get('http://localhost:3001/books/'+curPage+'/'+pageSize+'/'+search)
+                .success(function(largeLoad) {
+                    $scope.books = largeLoad.books;
+                    $scope.pageOpts.page = (largeLoad.pages).toString();
+                });
+        }
 
     }])
 

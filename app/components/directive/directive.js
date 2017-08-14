@@ -4,9 +4,9 @@ angular
         return {
             restrict: 'AE',
             scope: {
-                pagesize:'@',
-                numpages: '@',
-                currpage: '@',
+                pagesize:'=',
+                numpages: '=',
+                currpage: '=',
                 onselectpage : '&'
             },
 
@@ -15,16 +15,17 @@ angular
             replace: true,
 
             link: function(s){
-
+                //根据页面总数变化来重新生成分页组件
                 s.$watch('numpages', function(value){
+                    //页号组件参数s.pages
                     s.pages = [];
 
                     for(var i=1;i<=value;i++){
                         s.pages.push(i);
                     }
-
+                    //初始化active页号
                     s.isActivePage(s.currpage);
-
+                    //当页面总数减少后，则需保持页面处在最后页的选中状态
                     if(s.currpage > value){
                         s.selectPage(value);
                     }

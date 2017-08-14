@@ -70,9 +70,17 @@ app/
   1.$scope.$watch(‘filterText’,callback)
 
   2.callbacke中调用setTimeout()【记住使用clearTimeout方法清除上次调用的getDataAsync()，否则多个该函数则进入队列中等待执行】延迟执行getDataAsync()，以防止filterText频繁变化而频繁请求服务器
+
+4)删除：
+
+   
   
-4)查看详情：
+5)查看详情：
 
   1.配置路由 url中通过 /:params 形式来接收参数
 
   2.$routeParams依赖来接收来源页面间传递的参数 	
+
+6)查询：
+
+  根据“书名”模糊查询
