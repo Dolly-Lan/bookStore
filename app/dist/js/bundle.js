@@ -18738,22 +18738,32 @@ angular.module('bookList', []).controller('bookList', ['$scope', '$http', '$time
         curPage: 1,
         page: 1
     };
-    $scope.getDataAsync = function (pageSize, page) {
-        $http.get('http://localhost:3001/books/' + page + '/' + pageSize).success(function (largeLoad) {
+    $scope.getDataAsync = function (curPage, pageSize, search) {
+        var url = "";
+        if (search) {
+            var search = search.toLowerCase();
+            url = 'http://localhost:3001/books/' + curPage + '/' + pageSize + '/' + search;
+        } else {
+            url = 'http://localhost:3001/books/' + curPage + '/' + pageSize;
+        }
+        $http.get(url).success(function (largeLoad) {
             $scope.books = largeLoad.books;
             $scope.pageOpts.page = largeLoad.pages;
+            $scope.pageOpts.curPage = largeLoad.curPage;
         });
     };
 
     //删除图书
-    $scope.delete = function (id, curPage, pageSize, search) {
-        $http.get("http://localhost:3001/books/del/" + id + '/' + curPage + '/' + pageSize + '/' + search).success(function (res) {
-            $scope.pageOpts.page = res.pages;
-            if (curPage > res.pages) $scope.pageOpts.curPage = res.pages;
+    $scope.delete = function (id) {
+        $http.delete("http://localhost:3001/books/del/" + id).success(function (res) {
+            //删除成功后重新请求当前页
+            if (res.code == 0) {
+                $scope.getDataAsync($scope.pageOpts.curPage, $scope.pageOpts.pageSize, $scope.search);
+            }
         });
     };
 
-    $scope.getDataAsync($scope.pageOpts.pageSize, $scope.pageOpts.curPage, "");
+    $scope.getDataAsync($scope.pageOpts.curPage, $scope.pageOpts.pageSize, "");
 
     /*$scope.$watch('search', function(newVal, oldVal) {
         var timer;
@@ -18765,14 +18775,6 @@ angular.module('bookList', []).controller('bookList', ['$scope', '$http', '$time
             },1000);
         }
     }, true);*/
-
-    $scope.searchBook = function (curPage, pageSize, search) {
-        var search = search.toLowerCase();
-        $http.get('http://localhost:3001/books/' + curPage + '/' + pageSize + '/' + search).success(function (largeLoad) {
-            $scope.books = largeLoad.books;
-            $scope.pageOpts.page = largeLoad.pages.toString();
-        });
-    };
 }]);
 
 /***/ }),
@@ -18813,6 +18815,12 @@ angular.module('pagination', []).directive('pagination', function () {
                 }
             });
 
+            s.$watch('currpage', function (newVal, oldVal) {
+                if (newVal !== oldVal) {
+                    s.isActivePage(s.currpage);
+                }
+            });
+
             //判读是否有上一页
             s.noPreviousPage = function () {
                 return s.currpage == 1;
@@ -18832,7 +18840,7 @@ angular.module('pagination', []).directive('pagination', function () {
             s.selectPage = function (page) {
                 if (!s.isActivePage(page)) {
                     s.currpage = page;
-                    s.onselectpage({ pageSize: s.pagesize, page: s.currpage });
+                    s.onselectpage({ curPage: s.currpage, pageSize: s.pagesize });
                 }
             };
 

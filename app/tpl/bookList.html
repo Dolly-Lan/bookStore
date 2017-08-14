@@ -4,7 +4,7 @@
             <label class="sr-only">搜索书籍</label>
             <input type="search" class="form-control"  placeholder="书名" ng-model="search">
         </div>
-        <button class="btn btn-default" ng-click="searchBook(pageOpts.curPage,pageOpts.pageSize,search)">搜索</button>
+        <button class="btn btn-default" ng-click="getDataAsync(1,pageOpts.pageSize,search)">搜索</button>
     </form>
 </div>
 <div>
@@ -17,7 +17,7 @@
             <td scope="row">{{book.id}}</td>
             <td>{{book.name}}</td>
             <td>
-                <span ng-click="delete(book.id,pageOpts.pageSize,search)">删除</span>
+                <span ng-click="delete(book.id)">删除</span>
                 <a href="#!/bookDetail/{{book.id}}">查看</a>
             </td>
         </tr>
@@ -26,7 +26,7 @@
 </div>
 <div>
     <nav aria-label="Page navigation" class="pull-center">
-        <pagination pageSize="pageOpts.pageSize" numPages="pageOpts.page" currPage="pageOpts.curPage" onSelectPage="getDataAsync(pageSize, page,search)"></pagination>
+        <pagination pageSize="pageOpts.pageSize" numPages="pageOpts.page" currPage="pageOpts.curPage" onSelectPage="getDataAsync(curPage,pageSize,search)"></pagination>
     </nav>
 </div>
 <div></div>

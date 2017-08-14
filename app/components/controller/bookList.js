@@ -11,27 +11,36 @@ angular
             curPage: 1,
             page: 1
         };
-        $scope.getDataAsync = function(pageSize, page) {
+        $scope.getDataAsync = function(curPage,pageSize,search) {
+            var url="";
+            if(search){
+                var search = search.toLowerCase();
+                url = 'http://localhost:3001/books/'+curPage+'/'+pageSize+'/'+search;
+            }else{
+                url = 'http://localhost:3001/books/'+curPage+'/'+pageSize;
+            }
             $http
-                .get('http://localhost:3001/books/'+page+'/'+pageSize)
+                .get(url)
                 .success(function(largeLoad) {
                     $scope.books = largeLoad.books;
                     $scope.pageOpts.page = largeLoad.pages;
+                    $scope.pageOpts.curPage = largeLoad.curPage;
                 });
         };
 
         //删除图书
-        $scope.delete = function (id,curPage,pageSize,search) {
+        $scope.delete = function (id) {
             $http
-                .get("http://localhost:3001/books/del/"+id+'/'+curPage+'/'+pageSize+'/'+search)
+                .delete("http://localhost:3001/books/del/"+id)
                 .success(function (res) {
-                    $scope.pageOpts.page = res.pages
-                    if(curPage > res.pages)
-                        $scope.pageOpts.curPage = res.pages;
+                    //删除成功后重新请求当前页
+                    if(res.code == 0){
+                        $scope.getDataAsync($scope.pageOpts.curPage,$scope.pageOpts.pageSize,$scope.search);
+                    }
                 });
         }
 
-        $scope.getDataAsync($scope.pageOpts.pageSize, $scope.pageOpts.curPage,"");
+        $scope.getDataAsync($scope.pageOpts.curPage,$scope.pageOpts.pageSize, "");
 
 
         /*$scope.$watch('search', function(newVal, oldVal) {
@@ -45,15 +54,7 @@ angular
             }
         }, true);*/
 
-        $scope.searchBook = function (curPage, pageSize, search) {
-            var search = search.toLowerCase();
-            $http
-                .get('http://localhost:3001/books/'+curPage+'/'+pageSize+'/'+search)
-                .success(function(largeLoad) {
-                    $scope.books = largeLoad.books;
-                    $scope.pageOpts.page = (largeLoad.pages).toString();
-                });
-        }
+
 
     }])
 

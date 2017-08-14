@@ -31,6 +31,12 @@ angular
                     }
                 });
 
+                s.$watch('currpage',function (newVal,oldVal) {
+                    if (newVal !== oldVal) {
+                        s.isActivePage(s.currpage);
+                    }
+                })
+
                 //判读是否有上一页
                 s.noPreviousPage = function(){
                     return s.currpage == 1;
@@ -50,7 +56,7 @@ angular
                 s.selectPage = function(page){
                     if(!s.isActivePage(page)){
                         s.currpage = page;
-                        s.onselectpage({pageSize:s.pagesize, page:s.currpage} );
+                        s.onselectpage({curPage:s.currpage,pageSize:s.pagesize} );
                     }
                 };
 
