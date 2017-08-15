@@ -89,11 +89,3 @@ app/
 6)查询：
 
   根据“书名”模糊查询，bookListService中getBookList()方法，最后多传一个字符串参数表示查询字符串
-  
-    searchStr = function () {
-          var obj = {};
-          if(req.params.search){
-              obj = {name:new RegExp(req.params.search)}  //对name字段支持“模糊查询”
-          }
-          return obj;
-      }();
