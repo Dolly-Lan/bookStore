@@ -2,6 +2,7 @@
 require('./bower_components/angular/angular.js');
 require('./bower_components/angular-route/angular-route.js');
 require("./components/controller/bookList.js");
+require("./components/service/bookList.js");
 require("./components/directive/directive.js");
 require("./components/controller/bookDetail.js");
 require("./bower_components/bootstrap-3.0.0/css/bootstrap.min.css");
@@ -11,6 +12,7 @@ require("./app.css");
 var myApp = angular.module('myApp', [
   'ngRoute',
   'bookList',
+  'bookListService',
   'pagination',
   'bookDetail'
 ])

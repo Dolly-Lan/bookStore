@@ -527,13 +527,14 @@ module.exports = __webpack_require__(4);
 __webpack_require__(5);
 __webpack_require__(6);
 __webpack_require__(7);
+__webpack_require__(18);
 __webpack_require__(8);
 __webpack_require__(9);
 __webpack_require__(10);
 __webpack_require__(16);
 
 // Declare app level module which depends on views, and components
-var myApp = angular.module('myApp', ['ngRoute', 'bookList', 'pagination', 'bookDetail']);
+var myApp = angular.module('myApp', ['ngRoute', 'bookList', 'bookListService', 'pagination', 'bookDetail']);
 
 //配置路由
 myApp.config(['$locationProvider', '$routeProvider', function ($locationProvider, $routeProvider) {
@@ -18730,7 +18731,7 @@ bindJQuery();publishExternalAPI(angular);angular.module("ngLocale",[],["$provide
 "use strict";
 
 
-angular.module('bookList', []).controller('bookList', ['$scope', '$http', '$timeout', function ($scope, $http, $timeout) {
+angular.module('bookList', []).controller('bookList', ['$scope', '$http', '$timeout', 'bookListService', function ($scope, $http, $timeout, bookListService) {
     $scope.books = [];
     $scope.search = "";
     $scope.pageOpts = {
@@ -18738,32 +18739,27 @@ angular.module('bookList', []).controller('bookList', ['$scope', '$http', '$time
         curPage: 1,
         page: 1
     };
-    $scope.getDataAsync = function (curPage, pageSize, search) {
-        var url = "";
-        if (search) {
-            var search = search.toLowerCase();
-            url = 'http://localhost:3001/books/' + curPage + '/' + pageSize + '/' + search;
-        } else {
-            url = 'http://localhost:3001/books/' + curPage + '/' + pageSize;
-        }
-        $http.get(url).success(function (largeLoad) {
-            $scope.books = largeLoad.books;
-            $scope.pageOpts.page = largeLoad.pages;
-            $scope.pageOpts.curPage = largeLoad.curPage;
+
+    $scope.getBookList = function (curPage, pageSize, search) {
+        bookListService.getBookList(curPage, pageSize, search).then(function (docs) {
+            var data = docs.data;
+            $scope.books = data.books;
+            $scope.pageOpts.page = data.pages;
+            $scope.pageOpts.curPage = data.curPage;
         });
     };
 
     //删除图书
-    $scope.delete = function (id) {
-        $http.delete("http://localhost:3001/books/del/" + id).success(function (res) {
-            //删除成功后重新请求当前页
-            if (res.code == 0) {
-                $scope.getDataAsync($scope.pageOpts.curPage, $scope.pageOpts.pageSize, $scope.search);
+    $scope.deleteBooks = function (id) {
+        bookListService.deleteBook(id).then(function (docs) {
+            var data = docs.data;
+            if (data.code == 0) {
+                $scope.getBookList($scope.pageOpts.curPage, $scope.pageOpts.pageSize, $scope.search);
             }
         });
     };
 
-    $scope.getDataAsync($scope.pageOpts.curPage, $scope.pageOpts.pageSize, "");
+    $scope.getBookList($scope.pageOpts.curPage, $scope.pageOpts.pageSize, "");
 
     /*$scope.$watch('search', function(newVal, oldVal) {
         var timer;
@@ -19074,6 +19070,39 @@ exports.push([module.i, "/* app css stylesheet */\n/*\n@import \"bower_component
 
 // exports
 
+
+/***/ }),
+/* 18 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+angular.module('bookListService', []).service('bookListService', ['$http', function ($http) {
+    /*
+    * @param : curPage一页查询的数目
+    * @param : pageSize当前页数
+    * @param : search搜索关键字
+    * @return : Promise对象
+    */
+    this.getBookList = function (curPage, pageSize, search) {
+        var url = "";
+        if (search) {
+            var search = search.toLowerCase();
+            url = 'http://localhost:3001/books/' + curPage + '/' + pageSize + '/' + search;
+        } else {
+            url = 'http://localhost:3001/books/' + curPage + '/' + pageSize;
+        }
+        return $http.get(url);
+    };
+    /*
+    * @param : id需要删除的id
+    * @return : Promise对象
+    */
+    this.deleteBook = function (id) {
+        return $http.delete("http://localhost:3001/books/del/" + id);
+    };
+}]);
 
 /***/ })
 /******/ ]);
