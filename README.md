@@ -2,7 +2,7 @@
 
 angular-seed + boostrap + webpack 图书管理系统
 
-分页/搜索/详情
+分页/搜索/详情/删除/新增
 
 ![image]
 
@@ -27,6 +27,9 @@ app/
     bootstrap-3.0.0/
     
   components/
+    
+    service/
+      bookList.js （定义列表页service）
   
     controller/
     
@@ -58,13 +61,8 @@ app/
 
 定义分页directive，在bookList controller的模板中调用，通过绑定策略把controller中的3个$scope值(curPage,pageSize,getDataAsync())双向传递给分页directive
 
-4)setTimeout自动搜索（修正：无）
 
-  1.$scope.$watch(‘filterText’,callback)
-
-  2.callbacke中调用setTimeout()【记住使用clearTimeout方法清除上次调用的getDataAsync()，否则多个该函数则进入队列中等待执行】延迟执行getDataAsync()，以防止filterText频繁变化而频繁请求服务器
-
-5)删除：
+4)删除：
 
 删除成功后重新请求当前页，会更新$scope上的值，则各个组件也会更新，比如分页
 
@@ -79,13 +77,36 @@ app/
                 }
             })
     }
+ 
+5)新增:
+
+  注入的service方法中采用POST提交书籍信息对象
+
+    /*
+    * @param : newBook新增书籍对象{name:"xx"}
+    * @return : Promise对象
+    */
+    this.addBook = function (newBook) {
+        return $http({
+            url: "http://localhost:3001/books/add",
+            data: newBook,
+            method: "POST"
+        })
+    }
+    
+6)查询：
+
+  根据“书名”模糊查询，bookListService中getBookList()方法，最后多传一个字符串参数表示查询字符串
+
   
-5)查看详情：
+7)查看详情：
 
   1.配置路由 url中通过 /:params 形式来接收参数
 
   2.$routeParams依赖来接收来源页面间传递的参数 	
 
-6)查询：
+8)setTimeout自动搜索（修正：无）
 
-  根据“书名”模糊查询，bookListService中getBookList()方法，最后多传一个字符串参数表示查询字符串
+  1.$scope.$watch(‘filterText’,callback)
+
+  2.callbacke中调用setTimeout()【记住使用clearTimeout方法清除上次调用的getDataAsync()，否则多个该函数则进入队列中等待执行】延迟执行getDataAsync()，以防止filterText频繁变化而频繁请求服务器

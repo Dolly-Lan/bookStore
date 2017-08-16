@@ -4,6 +4,7 @@ angular
     .module('bookList', [])
 
     .controller('bookList', ['$scope','$http','$timeout','bookListService',function($scope,$http,$timeout,bookListService) {
+        $scope.newBook = {};
         $scope.books= [];
         $scope.search = "";
         $scope.pageOpts = {
@@ -24,13 +25,24 @@ angular
         }
 
         //删除图书
-        $scope.deleteBooks = function (id) {
+        $scope.deleteBook = function (id) {
             bookListService
                 .deleteBook(id)
                 .then((docs)=>{
                         var data = docs.data;
                         if(data.code == 0){
                         $scope.getBookList($scope.pageOpts.curPage,$scope.pageOpts.pageSize,$scope.search);
+                    }
+                })
+        }
+
+        $scope.addBook = function(newBook){
+            bookListService
+                .addBook(newBook)
+                .then((docs)=>{
+                    var data = docs.data;
+                    if(data.code == 0) {
+                        $scope.getBookList($scope.pageOpts.curPage, $scope.pageOpts.pageSize, $scope.search);
                     }
                 })
         }

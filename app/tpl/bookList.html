@@ -8,6 +8,26 @@
     </form>
 </div>
 <div>
+    <div>
+        <form class="form-inline">
+            <div class="form-group">
+                <input type="text" class="form-control" placeholder="书名" ng-model="newBook.name">
+            </div>
+            <button type="button" class="btn btn-primary btn-sm" ng-click="addBook(newBook)">新增</button>
+        </form>
+        <!--<button type="button" class="btn btn-primary btn-sm pull-right" data-toggle="modal" data-target="#addBookDetail">新增</button>-->
+        <!--<div id="addBookDetail" class="modal fade" tabindex="-1" role="dialog">
+            <div class="modal-dialog modal-lg" role="document">
+                <div class="modal-content">
+                    ...
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary">Save changes</button>
+                    </div>
+                </div>
+            </div>
+        </div>-->
+    </div>
     <table class="table table-bordered table-hover">
         <thead>
         <tr><th>书号</th> <th>书名</th><th>操作</th> </tr>
@@ -17,7 +37,7 @@
             <td scope="row">{{book.id}}</td>
             <td>{{book.name}}</td>
             <td>
-                <span ng-click="deleteBooks(book.id)">删除</span>
+                <span ng-click="deleteBook(book.id)">删除</span>
                 <a href="#!/bookDetail/{{book.id}}">查看</a>
             </td>
         </tr>

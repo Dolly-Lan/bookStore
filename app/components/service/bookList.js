@@ -24,4 +24,15 @@ angular
         this.deleteBook = function (id) {
             return $http.delete("http://localhost:3001/books/del/"+id)
         }
+        /*
+        * @param : newBook新增书籍对象{name:"xx"}
+        * @return : Promise对象
+        */
+        this.addBook = function (newBook) {
+            return $http({
+                url: "http://localhost:3001/books/add",
+                data: newBook,
+                method: "POST"
+            })
+        }
     }]);
