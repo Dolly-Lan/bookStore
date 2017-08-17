@@ -98,6 +98,30 @@ app/
 
   根据“书名”模糊查询，bookListService中getBookList()方法，最后多传一个字符串参数表示查询字符串
 
+7）更新
+  
+   更新包含2个操作，开始更新startEdit()，确认更新confirmEdit()
+    
+    //把当前更新对象，和其$scope.books中的索引生成给$scope.book对象
+    $scope.startEdit = function (book,index) {
+        $scope.book = book;
+        $scope.book.index = index;
+    }
+    
+    //对$scope.book对象进行修改和提交更新
+    $scope.confirmEdit = function (book) {
+        var index = book.index;
+        var postBook = {};  //只提交book相关信息，index作前台索引用
+        postBook.name = book.name;
+        postBook.id = book.id;
+        bookListService
+            .confirmEdit(postBook)
+            .then((docs)=>{
+                var data = docs.data;
+                $scope.books[index].id = data.id;
+                $scope.books[index].name = data.name;
+            })
+    }
   
 7)查看详情：
 

@@ -35,10 +35,11 @@
         <tbody>
         <tr ng-repeat="book in books">
             <td scope="row">{{book.id}}</td>
-            <td>{{book.name}}</td>
+            <td >{{book.name}}</td>
             <td>
                 <span ng-click="deleteBook(book.id)">删除</span>
                 <a href="#!/bookDetail/{{book.id}}">查看</a>
+                <a data-toggle="modal" data-target="#myModal" ng-click="startEdit(book,$index)">修改</a>
             </td>
         </tr>
         </tbody>
@@ -49,4 +50,40 @@
         <pagination pageSize="pageOpts.pageSize" numPages="pageOpts.page" currPage="pageOpts.curPage" onSelectPage="getBookList(curPage,pageSize,search)"></pagination>
     </nav>
 </div>
-<div></div>
+<div class="modal fade in"  id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h4 class="modal-title" id="myModalLabel">
+                    修改图书
+                </h4>
+            </div>
+            <div class="modal-body">
+
+                <form class="form-horizontal ng-pristine ng-valid" role="form">
+                    <div class="form-group">
+                        <label for="bookId" class="col-sm-2 control-label">编号</label>
+                        <div class="col-sm-6">
+                            <input type="text" class="form-control" id="bookId" ng-model="book.id" ng-readonly="true" readonly="readonly">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="bookName" class="col-sm-2 control-label">书名</label>
+                        <div class="col-sm-6">
+                            <input type="text" class="form-control" id="bookName" ng-model="book.name">
+                        </div>
+                    </div>
+                </form>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" ng-click="confirmEdit(book)" class="btn btn-primary" data-dismiss="modal">
+                    <span class="glyphicon glyphicon-floppy-disk"></span>
+                    保存</button>
+            </div>
+        </div>
+
+    </div>
+
+</div>

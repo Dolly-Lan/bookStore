@@ -35,4 +35,13 @@ angular
                 method: "POST"
             })
         }
+
+        this.confirmEdit = function (book) {
+            return $http({
+                url: "http://localhost:3001/books/update",
+                data: book,
+                method: "PUT"
+            })
+        }
+
     }]);
